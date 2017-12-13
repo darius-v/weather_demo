@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Service\WeatherService;
+use App\ExceptionsForUser\GeneralException;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -17,7 +18,11 @@ class WeatherController extends Controller
 
     public function showWeatherAction(): Response
     {
-        $temperature = $this->weatherService->getTemperatureInVilnius();
+        try {
+            $temperature = $this->weatherService->getTemperatureInVilnius();
+        } catch (GeneralException $e) {
+            return $this->render('error.html.twig', ['error' => $e->getMessage()]);
+        }
 
         return $this->render('weather.html.twig', ['temperature' => $temperature]);
     }

@@ -2,6 +2,8 @@
 
 namespace App\Service;
 
+use App\ExceptionsForUser\GeneralException;
+
 class YahooWeatherServiceProvider implements WeatherServiceProviderInterface
 {
     private $curlWrapper;
@@ -16,6 +18,10 @@ class YahooWeatherServiceProvider implements WeatherServiceProviderInterface
     /**
      * Returns 'current' temperature in Vilnius.
      * Since yahoo does not have current temperature, we get average from the today's forecast in Vilnius
+     *
+     * This api is very unstable, so after some requests, it returns empty response.
+     *
+     * @throws GeneralException
      * @return int
      */
     public function getWeather(): int
@@ -29,6 +35,10 @@ class YahooWeatherServiceProvider implements WeatherServiceProviderInterface
         $json = $this->curlWrapper->get($yqlQueryUrl);
 
         $weather = json_decode($json, true);
+
+        if (is_null($weather)) {
+            throw new GeneralException('Weather service did not give response');
+        }
 
         $todayForecast = $weather['query']['results']['channel']['item']['forecast'][0];
 
