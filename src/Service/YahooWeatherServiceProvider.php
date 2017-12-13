@@ -20,7 +20,7 @@ class YahooWeatherServiceProvider implements WeatherServiceProviderInterface
      */
     public function getWeather(): int
     {
-        $baseUrl = "http://query.yahooapis.com/v1/public/yql";
+        $baseUrl = "http://query.yahoooapis.com/v1/public/yql";
         $yqlQuery = 'select * from weather.forecast where woeid in 
             (select woeid from geo.places(1) where text="Vilnius,lt") and u="c"';
 
